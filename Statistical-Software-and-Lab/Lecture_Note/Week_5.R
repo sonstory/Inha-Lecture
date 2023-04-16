@@ -1,6 +1,13 @@
-dat = data.frame()
+# R에서 자료의 입력
+## 명령어를 통한 직접적인 입력
+x <- c(1,3,2,4)
+xmat <- matrix(c(1,2,4,5,2,1),3,2)
+
+## R에서 제공하는 자료 편집기 이용
+dat = data.frame()# 비어있는 데이터 프레임
 edit(dat) # 수정한 결과를 그대로 return
 fix(dat) # 수정한 결과를 적용
+dat = edit(dat) # 변수에 지정
 dat
 
 # readline
@@ -9,7 +16,7 @@ b = readline("Input two integers with comma (ex:1,2) :")
 as.numeric(unlist(strsplit(b,"[,]")))
 
 # scan
-path = "C:/Users/sjy54/OneDrive - 인하대학교/Son/05. INHA/4-1/통계소프트웨어 및 실습/강의 기록/example/example_data/"
+path = "C:/Users/sjy54/OneDrive - 인하대학교/Son/05. INHA/4-1/통계소프트웨어 및 실습/강의 기록/example/"
 setwd(path)
 dir()
 x1 = scan(file="input_noh.txt", what=numeric()); x1[1:5]
@@ -18,13 +25,13 @@ x3 = scan(file="input_h.txt"); x3[1:5] # 실수가 아닌 문자열이 있어서
 x4 = scan(file="input_h.txt", what=character()); x4[1:5]
 x = matrix(as.numeric(x4[-(1:2)]), ncol=2, byrow=T); x
 
-setwd("C:/Users/sjy54/OneDrive - 인하대학교/Son/05. INHA/4-1/통계소프트웨어 및 실습/강의 기록/")
+setwd("C:/Users/sjy54/OneDrive - 인하대학교/Son/05. INHA/4-1/통계소프트웨어 및 실습/강의 기록/example")
 grep('^i', dir(), value=T)
-dat = read.table(file="./example/example_data/input_noh.txt"); dat
-dat2 = read.table(file="./example/example_data/input_noh.txt", header=T); dat2
-dat3 = read.table(file="./example/example_data/input_h.txt", header=F); dat3
-dat4 = read.table(file="./example/example_data/input_h.txt", header=T); dat4
-dat5 = read.table(file="./example/example_data/input_h.txt", header=F, stringsAsFactors=T); dat5
+dat = read.table(file="./input_noh.txt"); dat # header=False가 default
+dat2 = read.table(file="./input_noh.txt", header=T); dat2
+dat3 = read.table(file="./input_h.txt", header=F); dat3
+dat4 = read.table(file="./input_h.txt", header=T); dat4
+dat5 = read.table(file="./input_h.txt", header=F, stringsAsFactors=T); dat5
 
 dat3[1:6,1]
 dat5[1:6,1]
@@ -39,11 +46,14 @@ ncol(dat2)
 
 # cat
 x <- 1:10; x
+## 화면에 출력
 cat(x, sep="\t")
 cat("\n", 1, "st element of x = ", x[1])
+## 파일에 출력
 cat(x, file="x.txt", sep="\t", append=F)
 cat('\t', file="x.txt", sep="", append=T)
 cat(x, file="x.txt", sep='\t', append=T)
+cat(x, file="x.txt", sep="", append=F)
 
 i = 0
 while(1){
@@ -58,7 +68,7 @@ for(i in 1:1000){
 
 # write.table
 setwd("C:/Users/sjy54/OneDrive - 인하대학교/Son/05. INHA/4-1/통계소프트웨어 및 실습/강의 기록/file/")
-x1 <- 1:20
+x1 <- 1:20; x1
 x2 <- rep(c("A", "B", "B", "A"), 5); x2
 x3 <- rep(c(T,F), each=10); x3
 dat <- data.frame(x1,x2,x3); dat
@@ -98,32 +108,39 @@ dim(dat2)
 # lapply & sapply
 v = c("a,b,c,d,e", "a,b", "d,e,f"); v
 lapply(v, nchar)
+sapply(v, nchar)
+
 sp = strsplit(v, ','); sp
 lapply(sp, length)
+sapply(sp, length)
+
 lapply(sp, paste0, 3)
-sapply(v, nchar)
-lapply(sp, "[[", 2); sapply(sp, "[[", 2)
+
+lapply(sp, "[[", 2)
+sapply(sp, "[[", 2)
+
 get_elm = function(x,k) {return(x[k])}
 lapply(sp, get_elm , 2)
-sapply(sp, length)
+
 x = list(a=1:10, b=rnorm(20)); x
 sapply(x, quantile, c(0.25, 0.5, 0.75))
 
 search()
 ls(8)
 
-install.packages("deplyr")
-library(deplyr)
+install.packages("dplyr")
+library(dplyr)
 ls(2)
+
+# filter
 filter(mtcars, cyl==4, am==1)
 filter(mtcars, wt>2, cyl==8)
 names(mtcars)
+?names
 
 # select, mutate
-install.packages("deplyr")
-library(dplyr); search()
 select(mtcars, mpg, cyl, wt)
-select(mtcars, -hp, -gear) # 강의노트에 있는 mpg 빼야함
+select(mtcars, -hp, -gear)
 mtf = select(mtcars, mpg, am, cyl, hp, wt)
 mutate(mtf, hw_rat = hp/wt)
 mutate(mtf, hw_rat=hp/wt, cw_rat=cyl/wt)
@@ -131,15 +148,17 @@ mutate(mtf, hw_rat=hp/wt, cw_rat=cyl/wt)
 # arrange
 arrange(mtf, mpg, desc(cyl))
 arrange(mtf, am, cyl, wt)
+
+# summarize
 summarize(mtcars, m_mpg=mean(mpg), v_mpg=var(mpg))
 summarize(mtcars, md_mpg=median(mpg), md_wt=median(wt))
 summarise_all(select(mtcars, mpg, cyl, wt), mean)
 summarise_all(select(mtcars, mpg, cyl, wt), list(mean,sd))
-summarise_all(select(mtcars, mpg, cyl, wt), 
-              list(mean=mean, sd=sd))              
+summarise_all(select(mtcars, mpg, cyl, wt), list(mean=mean, sd=sd))              
 
 # group_by
 mt_gr = group_by(mtcars, cyl)
+head(mt_gr)
 summarize(mt_gr, m_mpg=mean(mpg), m_wt=mean(wt))
 summarize(mt_gr, v_mpg=var(mpg), v_wt=var(wt))
 summarise_all(mt_gr, list(mean=mean, var=var))
@@ -148,7 +167,8 @@ summarise_all(mt_gr, list(mean=mean, var=var))
 dat <- group_by(mtcars, cyl); dat
 dat <- select(dat, mpg, wt, cyl); dat
 dat <- summarize(dat, m_mpg=mean(mpg)); dat
-dat <- summarize(dat, m_mpg > 16); dat
+dat <- filter(dat, m_mpg > 16); dat
+
 dat2 <- mtcars %>%
   group_by(cyl) %>%
   select(mpg, wt, cyl) %>%
@@ -157,17 +177,19 @@ dat2 <- mtcars %>%
 dat2
 
 # 결측값 확인
-x <- matrix(c(NA,1,3,NA,NA,2),3,2); is.na(x)
-
+x <- matrix(c(NA,1,3,NA,NA,2),3,2)
+is.na(x)
 sum(is.na(x)) # number of missing values
+
 which(is.na(x)) # 1차원 위치
-which(is.na(x), T) # 2차원 위치
-apply(x,2,mean,na.rm=T)
+which(is.na(x), arr.ind=T) # 2차원 위치
+
+apply(x,2,mean,na.rm=T) # 2는 col
 x[which(is.na(x))]
 x[which(is.na(x), T)]
-x[which(is.na(x))] = 2; x
+x[which(is.na(x))] = 2; x # 결측치 대체
 
 x <- matrix(c(NA,1.6, 3.5, 3.8, NA, NA, 2.4, 2.3),4,2); x
 apply(x,2, mean, na.rm=T)
-indx = which(is.na(x), T)
-x[indx] = apply(x,2, mean, na.rm=T)[indx[,2]];x
+indx = which(is.na(x), T); indx
+  x[indx] = apply(x,2, mean, na.rm=T)[indx[,2]];x # 평균치 대체

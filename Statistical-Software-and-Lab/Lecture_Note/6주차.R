@@ -144,3 +144,57 @@ for(i in 1:10){
   s = s+i
 }
 i;s
+
+setwd('C:/Users/sjy54/OneDrive - 인하대학교/Son/12. Github/Inha-Lecture/Statistical-Software-and-Lab/Lecture_Note/')
+getwd()
+
+# R에서 프로그램 실행 소요 시간 측정하기
+system.time({
+  s=0
+  for(i in 1.1:1e8){
+    s = s + i
+  }
+})
+y <- system.time(sum(1.1:1e8)) ## 1e6 = 1 * 10^6, 1e-4 = 1* 10^(-4)
+y[1]; y[2]; y[3]; y
+
+tic1 = Sys.time() # 블럭 잡아서 실행
+s=0
+for(i in 1.1:1e8){
+  s = s + i
+}
+toc1 = Sys.time()
+y <- system.time(sum(1.1:1e8))
+as.numeric(toc1 - tic1, units='secs')
+
+tic2 = Sys.time()
+y <- system.time(sum(1.1:1e8))
+toc2 = Sys.time()
+as.numeric(toc2 - tic2, units='secs')
+
+n_rep = 10
+n = 1e6
+xm = rep(0, n_rep)
+tic1 = Sys.time()
+for(i in 1:n_rep){
+  tic2 = Sys.time()
+  samp = rnorm(n,2,2)
+  xm[i] = mean(samp)
+  toc2 = Sys.time()
+  cat('\n i=', i, 'time', as.numeric(toc2-tic2, units='secs'))
+}
+Sys.time()-tic1
+
+tic <- Sys.time()
+s = 0
+for(i in 1.1:1e5){
+  if(i %% 2 == 0 || i %% 3 == 0)
+    s = s + i
+}
+toc <- Sys.time(); as.numeric(toc-tic, units='secs')
+
+tic2 <- Sys.time()
+x <- 1.1:1e5
+s2 = sum(x[x%%2==0 | x%%3 ==0])
+toc2 <- Sys.time()
+as.numeric(toc2-tic2, units='secs')
